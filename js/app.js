@@ -20,7 +20,6 @@ import { renderSettings } from './ui/settings.js';
 
 import { ROUTES } from './utils/constants.js';
 import { isOnline } from './utils/helpers.js';
-import { lsGet, lsRemove } from './utils/storage.js';
 import { Toast } from './components/toast.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -30,17 +29,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 2. Initialize default categories
     await CategoryService.initDefaults();
-
-    // 2b. Restore settings if coming back from a delete-transactions wipe
-    const needsRestore = lsGet('_restore_on_load', false);
-    if (needsRestore) {
-      lsRemove('_restore_on_load');
-      const preserved = lsGet('_preserved_settings', null);
-      if (preserved) {
-        lsRemove('_preserved_settings');
-        await SettingsService.setMany(preserved);
-      }
-    }
 
     // 3. Seed sample data if empty
     await seedSampleData();

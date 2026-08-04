@@ -184,7 +184,7 @@ export function cursorAll(store, range = null, indexName = null) {
 }
 
 /**
- * Delete the entire database (for reset)
+ * Delete the entire database (for full reset).
  * @returns {Promise<void>}
  */
 export function deleteDatabase() {
@@ -194,12 +194,31 @@ export function deleteDatabase() {
       _db = null;
     }
 
-    const request = indexedDB.deleteDatabase(DB_NAME);
-    request.onsuccess = () => resolve();
-    request.onerror   = () => reject(request.error);
-    request.onblocked = () => {
-      console.warn('Database deletion blocked');
+    // Safety timeout — if deletion is blocked and onsuccess never fires,
+    // resolve after 5s so the reload still happens (data gone after restart).
+    const timeout = setTimeout(() => {
+      console.warn('DB deletion timed out, proceeding with reload anyway');
       resolve();
+    }, 5000);
+
+    const request = indexedDB.deleteDatabase(DB_NAME);
+
+    request.onsuccess = () => {
+      clearTimeout(timeout);
+      resolve();
+    };
+
+    request.onerror = () => {
+      clearTimeout(timeout);
+      reject(request.error);
+    };
+
+    request.onblocked = () => {
+      // Deletion is waiting for other connections to close.
+      // We already called _db.close() above so this should clear quickly.
+      // Do NOT resolve here — wait for onsuccess.
+      console.warn('DB deletion blocked — waiting for connections to close...');
     };
   });
 }
+

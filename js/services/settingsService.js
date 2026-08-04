@@ -6,8 +6,8 @@
 import { SettingsRepository } from '../db/repositories.js';
 import { TransactionRepository, CategoryRepository, BudgetRepository, RecurringRepository } from '../db/repositories.js';
 import { CategoryService } from './categoryService.js';
-import { lsSet, lsGet, lsClear } from '../utils/storage.js';
-import { deleteDatabase, DB_NAME } from '../db/database.js';
+import { lsSet, lsClear } from '../utils/storage.js';
+import { deleteDatabase, getDatabase } from '../db/database.js';
 
 const DEFAULTS = {
   theme:    'system',
@@ -114,43 +114,38 @@ export const SettingsService = {
     await CategoryService.initDefaults();
   },
 
-  /** Reset entire app data — nuclear: deletes the entire IndexedDB database */
+  /** Reset entire app — deletes the entire IndexedDB database and all caches */
   async resetApp() {
-    // Unregister old Service Worker to force fresh cache on next load
+    // Unregister SW and clear all caches first
     if ('serviceWorker' in navigator) {
       const regs = await navigator.serviceWorker.getRegistrations();
       await Promise.all(regs.map(r => r.unregister()));
     }
-    // Delete all caches
     if ('caches' in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map(k => caches.delete(k)));
+      const cacheKeys = await caches.keys();
+      await Promise.all(cacheKeys.map(k => caches.delete(k)));
     }
-    // Delete the entire IndexedDB database
-    await deleteDatabase();
     lsClear();
+    // Delete the entire database — properly waits for onsuccess now
+    await deleteDatabase();
   },
 
-  /** Delete ALL transactions only — nuclear: delete & recreate database, preserving settings in localStorage */
+  /** Delete ALL transactions only — clears the transactions store directly */
   async deleteAllTransactions() {
-    // 1. Save settings to localStorage so they survive the DB deletion
-    const settings = await this.getAll();
-    lsSet('_preserved_settings', settings);
-
-    // 2. Unregister old Service Worker to force fresh cache
-    if ('serviceWorker' in navigator) {
-      const regs = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map(r => r.unregister()));
-    }
-    if ('caches' in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map(k => caches.delete(k)));
-    }
-
-    // 3. Delete entire database (guaranteed to work on all iOS browsers)
-    await deleteDatabase();
-
-    // 4. Signal app to restore settings and categories on next load
-    lsSet('_restore_on_load', true);
+    // Use a clean, direct IDB transaction — no async/await inside.
+    // Queuing .clear() synchronously and resolving on tx.oncomplete
+    // is the only reliable way on iOS WebKit / Chrome.
+    await new Promise((resolve, reject) => {
+      try {
+        const db = getDatabase();
+        const tx = db.transaction(['transactions'], 'readwrite');
+        tx.objectStore('transactions').clear(); // synchronous — no await
+        tx.oncomplete = () => resolve();
+        tx.onerror   = () => reject(tx.error);
+        tx.onabort   = () => reject(new Error('Clear transactions aborted'));
+      } catch (err) {
+        reject(err);
+      }
+    });
   },
 };
