@@ -1,51 +1,51 @@
 const CACHE_NAME = 'expense-tracker-v1';
 
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
+  './',
+  'index.html',
+  'manifest.json',
   
   // CSS
-  '/css/base.css',
-  '/css/theme.css',
-  '/css/layout.css',
-  '/css/components.css',
-  '/css/responsive.css',
+  'css/base.css',
+  'css/theme.css',
+  'css/layout.css',
+  'css/components.css',
+  'css/responsive.css',
   
   // JS Core
-  '/js/app.js',
-  '/js/router.js',
-  '/js/seed.js',
-  '/js/utils/constants.js',
-  '/js/utils/helpers.js',
-  '/js/utils/formatter.js',
-  '/js/utils/storage.js',
-  '/js/utils/chart.js',
+  'js/app.js',
+  'js/router.js',
+  'js/seed.js',
+  'js/utils/constants.js',
+  'js/utils/helpers.js',
+  'js/utils/formatter.js',
+  'js/utils/storage.js',
+  'js/utils/chart.js',
   
   // JS DB
-  '/js/db/database.js',
-  '/js/db/models.js',
-  '/js/db/repositories.js',
+  'js/db/database.js',
+  'js/db/models.js',
+  'js/db/repositories.js',
   
   // JS Services
-  '/js/services/transactionService.js',
-  '/js/services/categoryService.js',
-  '/js/services/reportService.js',
-  '/js/services/settingsService.js',
+  'js/services/transactionService.js',
+  'js/services/categoryService.js',
+  'js/services/reportService.js',
+  'js/services/settingsService.js',
   
   // JS UI
-  '/js/ui/dashboard.js',
-  '/js/ui/transactions.js',
-  '/js/ui/categories.js',
-  '/js/ui/reports.js',
-  '/js/ui/settings.js',
+  'js/ui/dashboard.js',
+  'js/ui/transactions.js',
+  'js/ui/categories.js',
+  'js/ui/reports.js',
+  'js/ui/settings.js',
   
   // JS Components
-  '/js/components/navbar.js',
-  '/js/components/fab.js',
-  '/js/components/cards.js',
-  '/js/components/modal.js',
-  '/js/components/toast.js'
+  'js/components/navbar.js',
+  'js/components/fab.js',
+  'js/components/cards.js',
+  'js/components/modal.js',
+  'js/components/toast.js'
 ];
 
 self.addEventListener('install', (event) => {
