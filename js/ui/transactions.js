@@ -347,6 +347,8 @@ export async function openTransactionModal(type = TRANSACTION_TYPES.EXPENSE, exi
             step="0.01"
             inputmode="decimal"
             autofocus
+            onfocus="this.select()"
+            autocomplete="off"
             aria-label="Transaction amount"
           />
         </div>

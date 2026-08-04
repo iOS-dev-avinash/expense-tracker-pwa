@@ -40,7 +40,7 @@ function getDashboardHTML() {
             <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);font-weight:500;letter-spacing:0.06em;text-transform:uppercase">
               ${getGreeting()}
             </div>
-            <h1 style="color:white;font-size:1.5rem;margin-top:2px" id="dash-greeting-name">My Finances</h1>
+            <h1 style="color:white;font-size:1.5rem;margin-top:2px">${getCurrentMonthYear()}</h1>
           </div>
           <div style="display:flex;gap:var(--space-2)">
             <button class="btn-icon" id="dash-refresh-btn" aria-label="Refresh dashboard" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:white">
@@ -388,7 +388,7 @@ async function loadBarChart() {
             position: 'top',
             labels: {
               color: textColor,
-              font: { family: 'Inter', size: 11 },
+              font: { size: 11 },
               boxWidth: 10,
               usePointStyle: true,
               pointStyle: 'circle',
@@ -403,13 +403,13 @@ async function loadBarChart() {
         scales: {
           x: {
             grid: { display: false },
-            ticks: { color: textColor, font: { family: 'Inter', size: 10 } },
+            ticks: { color: textColor, font: { size: 10 } },
           },
           y: {
             grid: { color: gridColor },
             ticks: {
               color: textColor,
-              font: { family: 'Inter', size: 10 },
+              font: { size: 10 },
               callback: val => formatCurrency(val, { compact: true }),
             },
           },
@@ -433,10 +433,15 @@ async function loadRecentTransactions() {
       .slice(0, RECENT_TX_LIMIT);
 
     if (!recent.length) {
-      container.innerHTML = renderEmptyState({
-        title: 'No transactions yet',
-        message: 'Tap the + button to add your first transaction',
-      });
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div class="empty-state-title">No transactions yet</div>
+          <div class="empty-state-text">Tap the <strong style="color:var(--accent-500)">+</strong> button below to add your first income or expense.</div>
+        </div>
+      `;
       return;
     }
 
@@ -500,6 +505,11 @@ function getGreeting() {
   if (hour < 12) return 'Good Morning';
   if (hour < 17) return 'Good Afternoon';
   return 'Good Evening';
+}
+
+function getCurrentMonthYear() {
+  const now = new Date();
+  return now.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
 }
 
 /** Called when dashboard becomes active again (for refresh) */

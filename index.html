@@ -3,20 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <!-- SEO & Meta -->
+  <title>Expense Tracker — Personal Finance Manager</title>
+  <meta name="description" content="A beautiful, offline-first expense tracker. Track income, expenses, budgets and view financial reports — all stored locally on your device. No account required.">
+  <meta name="keywords" content="expense tracker, budget app, personal finance, offline, PWA">
+  <meta name="author" content="Expense Tracker">
+
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Expense Tracker — Personal Finance Manager">
+  <meta property="og:description" content="Track income, expenses and budgets — offline, private, no account required.">
+  <meta property="og:image" content="favicon/icon-512.png">
+
+  <!-- Theme colors -->
   <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0a0f0a" media="(prefers-color-scheme: dark)">
+
+  <!-- iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>Expense Tracker</title>
-  
+  <meta name="apple-mobile-web-app-title" content="Expenses">
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="favicon/icon-192.png">
+
+  <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
+
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/responsive.css">
-  
+
   <!-- Preload Chart.js -->
   <link rel="preload" href="js/utils/chart.js" as="script">
 </head>
@@ -35,8 +57,18 @@
     <div class="loading-spinner"></div>
   </div>
 
+  <!-- Error Screen (shown if app fails to init) -->
+  <div id="error-screen" style="display:none;position:fixed;inset:0;background:var(--bg-primary);z-index:9998;display:none;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;gap:1rem;">
+    <div style="width:72px;height:72px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:0.5rem;">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div style="font-size:1.1rem;font-weight:700;color:var(--text-primary)">Something went wrong</div>
+    <div style="font-size:0.875rem;color:var(--text-secondary);max-width:280px;" id="error-message">The app failed to start. This may happen in Private/Incognito mode.</div>
+    <button onclick="window.location.reload()" style="margin-top:0.5rem;padding:0.75rem 1.5rem;background:var(--accent-500);color:white;border:none;border-radius:12px;font-size:0.875rem;font-weight:600;cursor:pointer;">Try Again</button>
+  </div>
+
   <!-- Offline Banner -->
-  <div id="offline-banner">You are offline. Working in local mode.</div>
+  <div id="offline-banner">📶 You are offline. Working in local mode.</div>
 
   <div id="app">
     <!-- Main Content Area (Pages) -->
@@ -50,16 +82,15 @@
 
     <!-- Bottom Navigation -->
     <nav id="bottom-nav"></nav>
-    
+
     <!-- Floating Action Button -->
     <div id="fab-menu"></div>
-    <button id="fab"></button>
+    <button id="fab" aria-label="Add transaction"></button>
   </div>
 
   <!-- Scripts -->
   <script src="js/utils/chart.js"></script>
   <script type="module" src="js/app.js"></script>
-
 
 </body>
 </html>

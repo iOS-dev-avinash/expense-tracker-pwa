@@ -82,12 +82,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 9. Offline Status Listener
     setupOfflineListener();
 
-    // 10. Dismiss Loading Screen
+    // 10. FAB hide-on-scroll
+    setupFabScrollBehavior();
+
+    // 11. Dismiss Loading Screen
     hideLoadingScreen();
 
   } catch (err) {
     console.error('Initialization error:', err);
     hideLoadingScreen();
+    showErrorScreen(err.message);
   }
 });
 
@@ -123,4 +127,36 @@ function setupOfflineListener() {
   window.addEventListener('online', updateStatus);
   window.addEventListener('offline', updateStatus);
   updateStatus();
+}
+
+function showErrorScreen(message) {
+  const screen = document.getElementById('error-screen');
+  const msgEl  = document.getElementById('error-message');
+  if (screen) {
+    screen.style.display = 'flex';
+    if (msgEl && message) msgEl.textContent = message;
+  }
+}
+
+function setupFabScrollBehavior() {
+  const fab = document.getElementById('fab');
+  const fabMenu = document.getElementById('fab-menu');
+  const main = document.getElementById('main-content');
+  if (!fab || !main) return;
+
+  let lastScroll = 0;
+  main.addEventListener('scroll', () => {
+    const curr = main.scrollTop;
+    if (curr > lastScroll + 10) {
+      // Scrolling down — hide FAB
+      fab.style.transform = 'scale(0)';
+      fab.style.opacity = '0';
+      if (fabMenu) { fabMenu.classList.remove('open'); fab.classList.remove('open'); }
+    } else if (curr < lastScroll - 10) {
+      // Scrolling up — show FAB
+      fab.style.transform = '';
+      fab.style.opacity = '';
+    }
+    lastScroll = Math.max(curr, 0);
+  }, { passive: true });
 }

@@ -268,7 +268,7 @@
   box-shadow: var(--shadow-fab);
   z-index: var(--z-fab);
   cursor: pointer;
-  transition: all var(--transition-spring);
+  transition: transform var(--transition-spring), opacity var(--transition-normal), box-shadow var(--transition-normal);
   border: none;
   animation: fabPop var(--transition-spring) forwards;
   -webkit-user-select: none;
