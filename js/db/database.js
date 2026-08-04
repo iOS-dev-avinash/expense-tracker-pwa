@@ -4,6 +4,7 @@
  */
 
 import { DB_NAME, DB_VERSION } from '../utils/constants.js';
+export { DB_NAME };
 
 let _db = null;
 
