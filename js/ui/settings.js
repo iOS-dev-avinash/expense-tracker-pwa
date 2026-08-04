@@ -186,8 +186,13 @@ function setupSettingsEvents(container, settings) {
   container.querySelector('#item-export')?.addEventListener('click', async () => {
     try {
       const backup = await SettingsService.exportFullBackup();
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
       downloadFile(JSON.stringify(backup, null, 2), `expense-tracker-backup-${Date.now()}.json`);
-      Toast.success('Backup downloaded');
+      if (isIOS) {
+        Toast.info('Tap Share → Save to Files to keep your backup');
+      } else {
+        Toast.success('Backup downloaded');
+      }
     } catch (err) {
       Toast.error('Export failed: ' + err.message);
     }

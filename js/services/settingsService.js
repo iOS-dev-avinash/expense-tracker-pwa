@@ -80,37 +80,33 @@ export const SettingsService = {
       throw new Error('Invalid backup format');
     }
 
+    // Run clear operations sequentially to avoid IDB contention on iOS
     if (mode === 'replace') {
-      await Promise.all([
-        TransactionRepository.clearAll(),
-        CategoryRepository.clearAll(),
-        SettingsRepository.clearAll(),
-        BudgetRepository.clearAll(),
-        RecurringRepository.clearAll(),
-      ]);
+      await TransactionRepository.clearAll();
+      await CategoryRepository.clearAll();
+      await SettingsRepository.clearAll();
+      await BudgetRepository.clearAll();
+      await RecurringRepository.clearAll();
     }
 
-    const ops = [];
-
-    if (Array.isArray(data.transactions)) {
-      ops.push(TransactionRepository.bulkAdd(data.transactions));
+    // Import each store sequentially
+    if (Array.isArray(data.transactions) && data.transactions.length) {
+      await TransactionRepository.bulkAdd(data.transactions);
     }
-    if (Array.isArray(data.categories)) {
-      ops.push(CategoryRepository.bulkAdd(data.categories));
+    if (Array.isArray(data.categories) && data.categories.length) {
+      await CategoryRepository.bulkAdd(data.categories);
     }
     if (data.settings && typeof data.settings === 'object') {
-      ops.push(SettingsRepository.setMany(data.settings));
+      await SettingsRepository.setMany(data.settings);
     }
-    if (Array.isArray(data.budgets)) {
-      ops.push(BudgetRepository.bulkAdd ? BudgetRepository.bulkAdd(data.budgets) : Promise.resolve());
+    if (Array.isArray(data.budgets) && data.budgets.length) {
+      await BudgetRepository.bulkAdd(data.budgets);
     }
-    if (Array.isArray(data.recurring)) {
-      ops.push(RecurringRepository.bulkAdd ? RecurringRepository.bulkAdd(data.recurring) : Promise.resolve());
+    if (Array.isArray(data.recurring) && data.recurring.length) {
+      await RecurringRepository.bulkAdd(data.recurring);
     }
 
-    await Promise.all(ops);
-
-    // Ensure categories are initialized
+    // Ensure default categories exist after import
     await CategoryService.initDefaults();
   },
 

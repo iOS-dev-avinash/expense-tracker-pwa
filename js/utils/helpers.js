@@ -332,15 +332,43 @@ export function isPWAInstalled() {
 }
 
 /**
- * Download a file
+ * Download a file. On iOS (where blob download doesn't work),
+ * opens the content in a new tab so the user can Share/Save it.
  * @param {string} content
  * @param {string} filename
  * @param {string} type
  */
 export function downloadFile(content, filename, type = 'application/json') {
   const blob = new Blob([content], { type });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
+
+  // iOS detection — blob downloads don't work on iOS Safari/Chrome
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+  if (isIOS) {
+    // Open in new tab — user can tap Share → Save to Files
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, '_blank');
+    if (!win) {
+      // Popup blocked — fallback: show content in current tab
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      };
+      reader.readAsDataURL(blob);
+    }
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    return;
+  }
+
+  // Desktop / Android Chrome — standard anchor download
+  const url = URL.createObjectURL(blob);
+  const a   = document.createElement('a');
   a.href     = url;
   a.download = filename;
   document.body.appendChild(a);

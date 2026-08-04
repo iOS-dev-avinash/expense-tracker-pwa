@@ -412,6 +412,22 @@ export const BudgetRepository = {
   clearAll() {
     return clearStore('budgets');
   },
+
+  bulkAdd(budgetList) {
+    return new Promise((resolve, reject) => {
+      if (!budgetList.length) return resolve(0);
+      const db = getDatabase();
+      const tx = db.transaction(['budgets'], 'readwrite');
+      const store = tx.objectStore('budgets');
+      budgetList.forEach(b => {
+        if (!b.id) b.id = `budget-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        store.put(b);
+      });
+      tx.oncomplete = () => resolve(budgetList.length);
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(new Error('bulkAdd budgets aborted'));
+    });
+  },
 };
 
 /* ============================================================
@@ -478,5 +494,18 @@ export const RecurringRepository = {
 
   clearAll() {
     return clearStore('recurring');
+  },
+
+  bulkAdd(recList) {
+    return new Promise((resolve, reject) => {
+      if (!recList.length) return resolve(0);
+      const db = getDatabase();
+      const tx = db.transaction(['recurring'], 'readwrite');
+      const store = tx.objectStore('recurring');
+      recList.forEach(r => store.put(r));
+      tx.oncomplete = () => resolve(recList.length);
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(new Error('bulkAdd recurring aborted'));
+    });
   },
 };
