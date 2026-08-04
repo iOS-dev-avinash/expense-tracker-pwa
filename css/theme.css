@@ -1,0 +1,211 @@
+/* ============================================
+   THEME.CSS - Design Tokens, Color Palettes, Dark/Light
+   ============================================ */
+
+/* ---- Light Theme (default) ---- */
+:root {
+  /* Accent - Green */
+  --accent-50:  #f0fdf4;
+  --accent-100: #dcfce7;
+  --accent-200: #bbf7d0;
+  --accent-300: #86efac;
+  --accent-400: #4ade80;
+  --accent-500: #22c55e;
+  --accent-600: #16a34a;
+  --accent-700: #15803d;
+  --accent-800: #166534;
+  --accent-900: #14532d;
+
+  /* Red (Expense) */
+  --red-50:   #fff1f2;
+  --red-100:  #ffe4e6;
+  --red-400:  #f87171;
+  --red-500:  #ef4444;
+  --red-600:  #dc2626;
+
+  /* Blue (Income) */
+  --blue-50:  #eff6ff;
+  --blue-100: #dbeafe;
+  --blue-400: #60a5fa;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+
+  /* Amber (Warning) */
+  --amber-50:  #fffbeb;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --amber-600: #d97706;
+
+  /* Purple */
+  --purple-400: #c084fc;
+  --purple-500: #a855f7;
+
+  /* Teal */
+  --teal-400: #2dd4bf;
+  --teal-500: #14b8a6;
+
+  /* --- Semantic Colors --- */
+  --income-color:   var(--blue-500);
+  --expense-color:  var(--red-500);
+  --savings-color:  var(--accent-500);
+  --balance-color:  var(--purple-500);
+
+  /* --- Surface / Background --- */
+  --bg-primary:   #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary:  #f1f5f9;
+  --bg-card:      #ffffff;
+  --bg-input:     #f8fafc;
+  --bg-overlay:   rgba(15, 23, 42, 0.5);
+
+  /* --- Text --- */
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary:  #94a3b8;
+  --text-inverse:   #ffffff;
+  --text-accent:    var(--accent-600);
+  --text-expense:   var(--red-600);
+  --text-income:    var(--blue-600);
+
+  /* --- Border --- */
+  --border-color:   #e2e8f0;
+  --border-focus:   var(--accent-500);
+  --border-radius-sm: 8px;
+  --border-radius:    12px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 24px;
+  --border-radius-full: 9999px;
+
+  /* --- Shadows --- */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.03);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+  --shadow-accent: 0 4px 16px rgba(34, 197, 94, 0.35);
+  --shadow-fab: 0 6px 24px rgba(22, 163, 74, 0.45);
+
+  /* --- Transitions --- */
+  --transition-fast:   150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow:   400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* --- Spacing (8px system) --- */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+
+  /* --- Z-index ---- */
+  --z-base:    1;
+  --z-dropdown: 100;
+  --z-sticky:   200;
+  --z-overlay:  300;
+  --z-modal:    400;
+  --z-toast:    500;
+  --z-fab:      250;
+
+  /* --- Nav ---- */
+  --navbar-height: 4rem;
+  --fab-size: 3.5rem;
+
+  /* --- Gradient --- */
+  --gradient-income:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-expense: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --gradient-savings: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --gradient-balance: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  --gradient-accent:  linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  --gradient-hero:    linear-gradient(160deg, #1a2e1a 0%, #0f2419 40%, #0a1f14 100%);
+}
+
+/* ---- Dark Theme ---- */
+[data-theme="dark"] {
+  /* --- Surface / Background --- */
+  --bg-primary:   #0a0f0a;
+  --bg-secondary: #111811;
+  --bg-tertiary:  #1a2118;
+  --bg-card:      #141c14;
+  --bg-input:     #1a2118;
+  --bg-overlay:   rgba(0, 0, 0, 0.7);
+
+  /* --- Text --- */
+  --text-primary:   #f0fdf4;
+  --text-secondary: #86efac;
+  --text-tertiary:  #4ade80;
+  --text-inverse:   #0a0f0a;
+  --text-accent:    var(--accent-400);
+  --text-expense:   var(--red-400);
+  --text-income:    var(--blue-400);
+
+  /* --- Border --- */
+  --border-color: #1e3a1e;
+  --border-focus: var(--accent-400);
+
+  /* --- Shadows --- */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
+  --shadow-accent: 0 4px 16px rgba(34, 197, 94, 0.25);
+  --shadow-fab: 0 6px 24px rgba(22, 163, 74, 0.35);
+
+  --accent-text-on-dark: var(--accent-400);
+}
+
+/* ---- System Dark Mode ---- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-primary:   #0a0f0a;
+    --bg-secondary: #111811;
+    --bg-tertiary:  #1a2118;
+    --bg-card:      #141c14;
+    --bg-input:     #1a2118;
+    --bg-overlay:   rgba(0, 0, 0, 0.7);
+    --text-primary:   #f0fdf4;
+    --text-secondary: #86efac;
+    --text-tertiary:  #4ade80;
+    --text-inverse:   #0a0f0a;
+    --text-accent:    var(--accent-400);
+    --text-expense:   var(--red-400);
+    --text-income:    var(--blue-400);
+    --border-color: #1e3a1e;
+    --border-focus: var(--accent-400);
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+    --shadow-xl: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
+    --shadow-accent: 0 4px 16px rgba(34, 197, 94, 0.25);
+    --shadow-fab: 0 6px 24px rgba(22, 163, 74, 0.35);
+  }
+}
+
+/* ---- Category Color Tokens ---- */
+:root {
+  --cat-food:           #f97316;
+  --cat-transport:      #3b82f6;
+  --cat-shopping:       #ec4899;
+  --cat-bills:          #8b5cf6;
+  --cat-housing:        #14b8a6;
+  --cat-medical:        #ef4444;
+  --cat-entertainment:  #f59e0b;
+  --cat-travel:         #06b6d4;
+  --cat-kids:           #a855f7;
+  --cat-education:      #6366f1;
+  --cat-investment:     #22c55e;
+  --cat-salary:         #10b981;
+  --cat-loan:           #f43f5e;
+  --cat-insurance:      #0ea5e9;
+  --cat-recharge:       #84cc16;
+  --cat-fuel:           #f97316;
+  --cat-miscellaneous:  #64748b;
+}

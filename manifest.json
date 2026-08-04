@@ -1,0 +1,41 @@
+{
+  "name": "Expense Tracker",
+  "short_name": "Expenses",
+  "description": "A local, offline-first expense tracker",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0a0f0a",
+  "theme_color": "#22c55e",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Add Expense",
+      "short_name": "Expense",
+      "description": "Add a new expense",
+      "url": "/index.html#transactions",
+      "icons": [{"src": "/favicon/icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "View Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your financial summary",
+      "url": "/index.html#dashboard",
+      "icons": [{"src": "/favicon/icon-192.png", "sizes": "192x192"}]
+    }
+  ]
+}
