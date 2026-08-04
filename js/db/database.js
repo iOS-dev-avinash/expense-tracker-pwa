@@ -94,27 +94,54 @@ export function getDatabase() {
  * @param {Function} operation  - receives stores object, returns Promise
  * @returns {Promise<any>}
  */
+/**
+ * Execute a transaction on one or more stores.
+ * NOTE: We do NOT use async/await inside the IDB transaction because browsers
+ * (especially Safari/iOS) auto-commit a transaction when no pending requests
+ * remain — mixing await with IDB requests causes the transaction to commit
+ * before the request actually fires. Instead, we queue all IDB requests
+ * synchronously and only resolve once the transaction itself completes.
+ *
+ * @param {string|string[]} storeNames
+ * @param {'readonly'|'readwrite'} mode
+ * @param {Function} operation - receives stores object SYNCHRONOUSLY, returns IDBRequest
+ * @returns {Promise<any>}
+ */
 export function withTransaction(storeNames, mode, operation) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const db = getDatabase();
     const names = Array.isArray(storeNames) ? storeNames : [storeNames];
-    const tx = db.transaction(names, mode);
 
-    tx.onerror  = () => reject(tx.error);
-    tx.onabort  = () => reject(new Error('Transaction aborted'));
+    let tx;
+    try {
+      tx = db.transaction(names, mode);
+    } catch (err) {
+      return reject(err);
+    }
 
     const stores = {};
     names.forEach(n => (stores[n] = tx.objectStore(n)));
 
+    let result;
     try {
-      const result = await operation(stores);
-      resolve(result);
+      // operation must be synchronous — it queues IDB requests, doesn't await them
+      result = operation(stores);
     } catch (err) {
-      tx.abort();
-      reject(err);
+      return reject(err);
     }
+
+    // If operation returned an IDBRequest, resolve its value on success
+    if (result && typeof result.onsuccess !== 'undefined') {
+      result.onsuccess = () => { result = result.result; };
+      result.onerror = () => reject(result.error);
+    }
+
+    tx.oncomplete = () => resolve(result && result.result !== undefined ? result.result : result);
+    tx.onerror    = () => reject(tx.error);
+    tx.onabort    = () => reject(new Error('Transaction aborted'));
   });
 }
+
 
 /**
  * Promisify an IDBRequest

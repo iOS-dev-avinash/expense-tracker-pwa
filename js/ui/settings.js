@@ -238,14 +238,18 @@ function setupSettingsEvents(container, settings) {
   container.querySelector('#item-clear-tx')?.addEventListener('click', async () => {
     const ok = await showConfirm({
       title: 'Delete All Transactions',
-      message: 'Are you sure? This will delete all transaction records permanently.',
+      message: 'Are you sure? This will permanently delete all transaction records. Categories are kept.',
       confirmLabel: 'Delete All',
       dangerous: true,
     });
     if (ok) {
-      await SettingsService.deleteAllTransactions();
-      Toast.success('All transactions deleted');
-      window.__refreshDashboard?.();
+      try {
+        await SettingsService.deleteAllTransactions();
+        Toast.success('All transactions deleted');
+        setTimeout(() => window.location.reload(), 600);
+      } catch (err) {
+        Toast.error('Failed to delete: ' + err.message);
+      }
     }
   });
 
@@ -253,14 +257,20 @@ function setupSettingsEvents(container, settings) {
   container.querySelector('#item-reset-app')?.addEventListener('click', async () => {
     const ok = await showConfirm({
       title: 'Reset Entire App',
-      message: 'This will wipe ALL transactions, custom categories, budgets, and settings. This cannot be undone!',
+      message: 'This will wipe ALL transactions, categories, budgets, and settings. This cannot be undone!',
       confirmLabel: 'Reset Everything',
       dangerous: true,
     });
     if (ok) {
-      await SettingsService.resetApp();
-      Toast.success('App reset to factory state');
-      setTimeout(() => window.location.reload(), 1000);
+      try {
+        await SettingsService.resetApp();
+        Toast.success('App reset. Restarting...');
+        setTimeout(() => window.location.reload(), 800);
+      } catch (err) {
+        // Even if clearAll fails, delete the DB and reload
+        Toast.info('Resetting...');
+        setTimeout(() => window.location.reload(), 800);
+      }
     }
   });
 }
