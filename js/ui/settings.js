@@ -71,6 +71,23 @@ export async function renderSettings() {
         </div>
       </div>
 
+      <!-- AI Integrations -->
+      <div class="settings-section-label">AI Features</div>
+      <div class="settings-list" style="margin-bottom:var(--space-4)">
+        <div class="settings-item" id="item-gemini-key">
+          <div class="settings-item-icon" style="background:rgba(99,102,241,0.1);color:#6366f1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          </div>
+          <div class="settings-item-content">
+            <div class="settings-item-title">Gemini API Key</div>
+            <div class="settings-item-sub">${settings.geminiApiKey ? 'Key is configured' : 'Required for Smart Receipt Scanner'}</div>
+          </div>
+          <div class="settings-item-right">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+
       <!-- Backup & Restore -->
       <div class="settings-section-label">Data & Backup</div>
       <div class="settings-list" style="margin-bottom:var(--space-4)">
@@ -124,6 +141,16 @@ export async function renderSettings() {
       <!-- About -->
       <div class="settings-section-label">About</div>
       <div class="settings-list" style="margin-bottom:var(--space-4)">
+        <div class="settings-item" id="item-install-app" style="display:none">
+          <div class="settings-item-icon" style="background:rgba(34,197,94,0.1);color:var(--accent-600)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </div>
+          <div class="settings-item-content">
+            <div class="settings-item-title" style="color:var(--accent-600)">Install App</div>
+            <div class="settings-item-sub">Add to your Home Screen / Desktop</div>
+          </div>
+        </div>
+
         <div class="settings-item" style="cursor:default">
           <div class="settings-item-icon" style="background:var(--accent-100);color:var(--accent-600)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -181,6 +208,21 @@ function setupSettingsEvents(container, settings) {
 
   // Budget Management
   container.querySelector('#item-budget')?.addEventListener('click', () => openBudgetModal());
+
+  // Gemini API Key
+  container.querySelector('#item-gemini-key')?.addEventListener('click', async () => {
+    const key = await showPrompt({
+      title: 'Gemini API Key',
+      placeholder: 'AIzaSy...',
+      defaultValue: settings.geminiApiKey || '',
+      label: 'Get a free key from Google AI Studio'
+    });
+    if (key !== null) {
+      await SettingsService.set('geminiApiKey', key.trim());
+      Toast.success(key.trim() ? 'API Key saved' : 'API Key removed');
+      renderSettings();
+    }
+  });
 
   // Export
   container.querySelector('#item-export')?.addEventListener('click', async () => {
@@ -254,6 +296,29 @@ function setupSettingsEvents(container, settings) {
         setTimeout(() => window.location.reload(), 600);
       } catch (err) {
         Toast.error('Failed to delete: ' + err.message);
+      }
+    }
+  });
+
+  // Install App
+  const installBtn = container.querySelector('#item-install-app');
+  if (window.__deferredInstallPrompt) {
+    installBtn.style.display = 'flex';
+  }
+  
+  // Listen for the custom event in case it fires while settings is open
+  window.addEventListener('app-installable', () => {
+    if (installBtn) installBtn.style.display = 'flex';
+  });
+
+  installBtn?.addEventListener('click', async () => {
+    if (window.__deferredInstallPrompt) {
+      window.__deferredInstallPrompt.prompt();
+      const { outcome } = await window.__deferredInstallPrompt.userChoice;
+      if (outcome === 'accepted') {
+        window.__deferredInstallPrompt = null;
+        installBtn.style.display = 'none';
+        Toast.success('App installed successfully');
       }
     }
   });

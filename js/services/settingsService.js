@@ -16,6 +16,7 @@ const DEFAULTS = {
   name:     '',
   budgetAlerts: true,
   recurringAlerts: true,
+  geminiApiKey: '',
 };
 
 export const SettingsService = {

@@ -317,16 +317,23 @@ function openSortSheet() {
 }
 
 /** Open add/edit transaction modal */
-export async function openTransactionModal(type = TRANSACTION_TYPES.EXPENSE, existingId = null) {
+export async function openTransactionModal(type = TRANSACTION_TYPES.EXPENSE, existingId = null, prefillData = null) {
   let existing = null;
   if (existingId) {
     existing = await TransactionService.getById(existingId);
+  } else if (prefillData) {
+    existing = { ...prefillData, categoryId: prefillData.suggestedCategoryId };
   }
 
   const categories = await CategoryService.getAll();
-  const defaultType = existing?.type || type;
   const expCats = categories.filter(c => c.type === 'expense' || !c.type);
   const incCats = categories.filter(c => c.type === 'income');
+
+  let defaultType = existing?.type || type;
+  if (!existing?.type && existing?.categoryId) {
+    const cat = categories.find(c => c.id === existing.categoryId);
+    if (cat) defaultType = cat.type || 'expense';
+  }
 
   const formId = `tx-form-${Date.now()}`;
 

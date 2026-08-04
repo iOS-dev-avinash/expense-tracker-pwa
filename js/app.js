@@ -79,8 +79,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 8. Register Service Worker
     registerServiceWorker();
 
-    // 9. Offline Status Listener
+    // 9. Offline Status & Install Prompt Listener
     setupOfflineListener();
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      window.__deferredInstallPrompt = e;
+      // Trigger a custom event in case settings page is already open
+      window.dispatchEvent(new Event('app-installable'));
+    });
 
     // 10. FAB hide-on-scroll
     setupFabScrollBehavior();
