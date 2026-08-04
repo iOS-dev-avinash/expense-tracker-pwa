@@ -7,6 +7,7 @@ import { SettingsRepository } from '../db/repositories.js';
 import { TransactionRepository, CategoryRepository, BudgetRepository, RecurringRepository } from '../db/repositories.js';
 import { CategoryService } from './categoryService.js';
 import { lsSet, lsClear } from '../utils/storage.js';
+import { deleteDatabase } from '../db/database.js';
 
 const DEFAULTS = {
   theme:    'system',
@@ -115,15 +116,8 @@ export const SettingsService = {
 
   /** Reset entire app data */
   async resetApp() {
-    await Promise.all([
-      TransactionRepository.clearAll(),
-      CategoryRepository.clearAll(),
-      SettingsRepository.clearAll(),
-      BudgetRepository.clearAll(),
-      RecurringRepository.clearAll(),
-    ]);
+    await deleteDatabase();
     lsClear();
-    await CategoryService.initDefaults();
   },
 
   /** Delete all data (transactions only) */

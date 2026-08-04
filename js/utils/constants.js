@@ -6,7 +6,7 @@
 export const APP_NAME = 'Expense Tracker';
 export const APP_VERSION = '1.0.0';
 export const DB_NAME = 'ExpenseTrackerDB';
-export const DB_VERSION = 1;
+export const DB_VERSION = 2;
 
 /** Currency symbol (localizable) */
 export const CURRENCY_SYMBOL = '₹';
